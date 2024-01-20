@@ -1,0 +1,52 @@
+version: "3.8"
+services:
+ xolo:
+  image: nachocode/xolo:api
+  container_name: xolo-api
+  environment:
+    - XOLO_ACL_OUTPUT_PATH=/mictlanx/xolo
+    - XOLO_ACL_FILENAME=xolo-acl.enc
+    - XOLO_ACL_DAEMON_HEARTBEAT=15min
+    - XOLO_ACL_KEY=ed448c7a5449e9603058ce630e26c9e3befb2b15e3692411c001e0b4256852d2
+    - MONGO_IP_ADDR=mongol
+    - MONGO_PORT=27017
+    - MONGO_DATABASE_NAME=mictlanx
+    - IP_ADDR=0.0.0.0
+    - PORT=10001
+    - RELOAD=0
+  ports:
+    - 10001:10001
+  volumes:
+    - /log:/log
+    - /mictlanx/xolo/xolo-acl.enc:/mictlanx/xolo/xolo-acl.enc
+  networks:
+    - mictlanx
+  
+ qr-consume-0:
+    image: 03_xolo_consumer
+    container_name: qr-consume-0
+    hostname: qr-consume-0
+    environment:
+      - CONFIG_PATH=/app/config/config-docker.yml
+      - MICTLANX_DAEMON=1
+      - MICTLANX_DEBUG=0
+      - MICTLANX_SHOW_METRICS=0
+      - MICTLANX_MAX_WORKERS=4
+      - MICTLANX_CHECK_PEER_AVAILABILITY_INTERVAL=15m
+      - MICTLANX_HEARTBEAT_INTERVAL=10s
+      - MICTLANX_LB_ALGORITHM=2CHOICES_UF
+      - MICTLANX_LOG_INTERVAL=24
+      - MICTLANX_LOG_WEHN=h
+      - MICTLANX_METRICS_BUFFER_SIZE=100
+      - MICTLANX_OUTPUT_PATH=/mictlanx/client
+    volumes:
+      - /log:/log
+      - /sink/03_xolo_qr_consume/:/sink
+      - /source/configs/config-docker_consume.yml:/app/config/config-docker.yml
+    networks:
+      - mictlanx
+    depends_on:
+      - xolo
+networks:
+ mictlanx:
+  external: true

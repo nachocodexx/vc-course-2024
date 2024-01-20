@@ -1,0 +1,11 @@
+client_id: "test"
+password: "6c4ca2e280801bb7339453a88faccf8567b714e81ab435441e968f989fc204c0e4d8d45bbb4cad98cd372a32c8eed1af6be070bc813cdad3818be05e52c01823bc1359cfe587f5f42382148d7437dab96aa5ba393c5ab32ee2a779b98cadd70a38c5c334afc5fc5bd20ece6adfcdeb2c3abce11b7ea4f71f8cda99e827162438"
+bucket_id: "test-bucket-0"
+sink_path: "/sink/qrs_out"
+mictlanx_peers: "mictlanx-peer-0:localhost:7000 mictlanx-peer-1:localhost:7001"
+mictlanx_protocol: "http"
+xolo_api_protocol: "http"
+xolo_api_hostname: "localhost"
+xolo_api_port: 10001
+xolo_api_version: 4
+log_path: "/log"

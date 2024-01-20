@@ -1,0 +1,5 @@
+demo1/bin/*
+demo2/bin/*
+demo*/__pycache__
+demo*/data
+demos.zip
