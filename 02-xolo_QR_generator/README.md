@@ -1,4 +1,8 @@
 # Demo 4: Deploying multiple containers using a Compose
+Create a volume:
+```bash
+docker volume create xolo-db
+```
 Build the qr generator app:
 ```bash
 docker build -f ./Dockerfile -t 02_xolo_qr_generator .

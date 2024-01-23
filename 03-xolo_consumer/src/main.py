@@ -2,10 +2,12 @@
 import os
 import sys
 import time as T
+
 from mictlanx.logger.log import Log
 from mictlanx.utils.index import Utils
 from mictlanx.v4.client import Client
 from mictlanx.v4.xolo.api.index import XoloAPI
+
 from option import Option,Some,NONE
 from yaml import load
 try:
@@ -65,6 +67,7 @@ if __name__ =="__main__":
             password = config.password.strip()
         )
 
+        # print("AUTH_RESULT",auth_result)
         if auth_result.is_err:
             reason ="Unauthorized: Incorrect username or password. For further assistance, please contact me at jesus.castillo.b@cinvestav.mx."
             log.error({
@@ -75,7 +78,9 @@ if __name__ =="__main__":
         
         authenticated_response = auth_result.unwrap()
         role = authenticated_response.role
+        # print("AGTER")
         can_read = xolo_api.check(role=role,resource=config.bucket_id, permission="read")
+        # print("BEORE")
         if not can_read:
             msg = "Xolo: Access Denied: you don't have permission to read to {}".format(config.bucket_id)
             log.error({
@@ -104,6 +109,11 @@ if __name__ =="__main__":
 
         start_time = T.time()
         gen = client.get_all_bucket_data(bucket_id=config.bucket_id,output_folder=config.sink_path,bucket_folder_as_root=True)
+        gen = list(gen)
+        if len(gen) ==0:
+            log.debug({
+                "event":"HIT.ALL.DATA"
+            })
         for x in gen:
             log.debug({
                 "event":"GET.SUCCESSFULLY",

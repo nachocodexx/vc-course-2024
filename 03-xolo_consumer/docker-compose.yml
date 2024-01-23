@@ -1,8 +1,20 @@
 version: "3.8"
 services:
+ mongol:
+  image: mongo:6-jammy
+  container_name: mongol
+  ports:
+    - 27017:27017
+  volumes:
+    - xolo-db:/data/db
+  networks:
+    - mictlanx
+  restart: unless-stopped 
+ 
  xolo:
   image: nachocode/xolo:api
   container_name: xolo-api
+  hostname: xolo-api
   environment:
     - XOLO_ACL_OUTPUT_PATH=/mictlanx/xolo
     - XOLO_ACL_FILENAME=xolo-acl.enc
@@ -21,11 +33,13 @@ services:
     - /mictlanx/xolo/xolo-acl.enc:/mictlanx/xolo/xolo-acl.enc
   networks:
     - mictlanx
+  depends_on:
+    - mongol
   
- qr-consume-0:
+ qr-consumer-0:
     image: 03_xolo_consumer
-    container_name: qr-consume-0
-    hostname: qr-consume-0
+    container_name: qr-consumer-0
+    hostname: qr-consumer-0
     environment:
       - CONFIG_PATH=/app/config/config-docker.yml
       - MICTLANX_DAEMON=1
@@ -39,6 +53,8 @@ services:
       - MICTLANX_LOG_WEHN=h
       - MICTLANX_METRICS_BUFFER_SIZE=100
       - MICTLANX_OUTPUT_PATH=/mictlanx/client
+    ports:
+      - 10002:10002
     volumes:
       - /log:/log
       - /sink/03_xolo_qr_consume/:/sink
@@ -47,6 +63,9 @@ services:
       - mictlanx
     depends_on:
       - xolo
+      - mongol
 networks:
  mictlanx:
   external: true
+volumes:
+  xolo-db:

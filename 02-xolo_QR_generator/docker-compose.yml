@@ -1,5 +1,16 @@
 version: "3.8"
 services:
+ mongol:
+  image: mongo:6-jammy
+  container_name: mongol
+  ports:
+    - 27017:27017
+  volumes:
+    - xolo-db:/data/db
+  networks:
+    - mictlanx
+  restart: unless-stopped 
+
  xolo:
   image: nachocode/xolo:api
   container_name: xolo-api
@@ -21,6 +32,8 @@ services:
     - /mictlanx/xolo/xolo-acl.enc:/mictlanx/xolo/xolo-acl.enc
   networks:
     - mictlanx
+  depends_on:
+    - mongol
   
  qr-gen-0:
     image: 02_xolo_qr_generator
@@ -51,3 +64,5 @@ services:
 networks:
  mictlanx:
   external: true
+volumes:
+  xolo-db:
